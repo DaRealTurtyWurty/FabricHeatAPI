@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "heatapi_testmod",
+  "version": "1.0.0",
+  "name": "HeatApi Test Mod",
+  "description": "The test mod for the Heat API",
+  "authors": [
+    "TurtyWurty"
+  ],
+  "contact": {
+    "homepage": "https://turtywurty.dev",
+    "sources": "https://github.com/DaRealTurtyWurty/FabricHeatApi",
+    "issues": "https://github.com/DaRealTurtyWurty/FabricHeatApi/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.turtywurty.heatapi.testmod.HeatApiTests"
+    ]
+  },
+  "depends": {
+    "heatapi": "*"
+  }
+}

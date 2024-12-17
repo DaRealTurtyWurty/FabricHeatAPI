@@ -12,13 +12,27 @@ base {
 	archivesName = project.archives_base_name
 }
 
+loom {
+	addRemapConfiguration("testModImplementation") {
+		targetConfigurationName = "test"
+		onCompileClasspath = true
+		onRuntimeClasspath = true
+	}
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modApi fabricApi.module("fabric-transfer-api-v1", project.fabric_version)
-	
+
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	testModImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
+}
+
+test {
+	useJUnitPlatform()
 }
 
 processResources {
@@ -49,7 +63,7 @@ jar {
 
 publishing {
 	publications {
-		create("mavenJava", MavenPublication) {
+		create(MavenPublication) {
 			groupId project.group
 			artifactId project.base.archivesName.get()
 			version project.version
@@ -74,6 +88,7 @@ publishing {
 tasks.register('checkVersion') {
 	doFirst {
 		def url = ENV.MAVEN_URL + "/" + project.group.replace(".", "/") + "/" + project.base.archivesName.get() + "/maven-metadata.xml"
+		println("Checking $url")
 		def xml = new URI(url).toURL().text
 		def metadata = new groovy.xml.XmlSlurper().parseText(xml)
 		def versions = metadata.versioning.versions.version*.text()
