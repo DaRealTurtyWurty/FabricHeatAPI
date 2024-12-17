@@ -73,7 +73,8 @@ publishing {
 
 tasks.register('checkVersion') {
 	doFirst {
-		def xml = new URI(ENV.MAVEN_URL + "/" + project.group.replace(".", "/") + "/" + project.base.archivesName.get() + "/maven-metadata.xml").toURL().text
+		def url = ENV.MAVEN_URL + "/" + project.group.replace(".", "/") + "/" + project.base.archivesName.get() + "/maven-metadata.xml"
+		def xml = new URI(url).toURL().text
 		def metadata = new groovy.xml.XmlSlurper().parseText(xml)
 		def versions = metadata.versioning.versions.version*.text()
 		if (versions.contains(project.version)) {
