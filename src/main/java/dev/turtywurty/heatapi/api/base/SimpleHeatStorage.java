@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 public class SimpleHeatStorage extends SnapshotParticipant<Long> implements HeatStorage {
-    public long amount = 0;
     public final long capacity;
     public final long maxInsert, maxExtract;
+    private long amount = 0;
 
     public SimpleHeatStorage(long capacity, long maxInsert, long maxExtract) {
         StoragePreconditions.notNegative(capacity);
@@ -24,10 +24,10 @@ public class SimpleHeatStorage extends SnapshotParticipant<Long> implements Heat
     public long insert(long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
 
-        long inserted = Math.min(maxAmount, Math.min(this.maxInsert, this.capacity - this.amount));
+        long inserted = Math.min(maxAmount, Math.min(this.maxInsert, this.capacity - this.getAmount()));
         if (inserted > 0) {
             updateSnapshots(transaction);
-            this.amount += inserted;
+            this.setAmount(this.getAmount() + inserted);
             return inserted;
         }
 
@@ -43,10 +43,10 @@ public class SimpleHeatStorage extends SnapshotParticipant<Long> implements Heat
     public long extract(long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notNegative(maxAmount);
 
-        long extracted = Math.min(maxAmount, Math.min(this.maxExtract, this.amount));
+        long extracted = Math.min(maxAmount, Math.min(this.maxExtract, this.getAmount()));
         if (extracted > 0) {
             updateSnapshots(transaction);
-            this.amount -= extracted;
+            this.setAmount(this.getAmount() - extracted);
             return extracted;
         }
 
@@ -63,6 +63,10 @@ public class SimpleHeatStorage extends SnapshotParticipant<Long> implements Heat
         return this.amount;
     }
 
+    public void setAmount(long amount) {
+        this.amount = amount;
+    }
+
     @Override
     public long getCapacity() {
         return this.capacity;
@@ -70,11 +74,11 @@ public class SimpleHeatStorage extends SnapshotParticipant<Long> implements Heat
 
     @Override
     protected Long createSnapshot() {
-        return this.amount;
+        return this.getAmount();
     }
 
     @Override
     protected void readSnapshot(Long snapshot) {
-        this.amount = snapshot;
+        this.setAmount(snapshot);
     }
 }

@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
  * This class is a {@link SnapshotParticipant} and will automatically handle snapshots for you.
  */
 public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long> {
-    public long amount;
     private final SideStorage[] sideStorages = new SideStorage[Direction.values().length + 1];
+    private long amount;
 
     public SimpleSidedHeatContainer() {
         for (int i = 0; i < this.sideStorages.length; i++) {
@@ -65,6 +65,14 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
     @Override
     protected void readSnapshot(Long snapshot) {
         this.amount = snapshot;
+    }
+
+    public long getAmount() {
+        return this.amount;
+    }
+
+    public void setAmount(long amount) {
+        this.amount = amount;
     }
 
     private class SideStorage implements HeatStorage {

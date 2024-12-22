@@ -17,6 +17,16 @@ import java.util.Objects;
 
 @ApiStatus.Internal
 public class SimpleItemHeatStorageImpl implements HeatStorage {
+    private final ContainerItemContext context;
+    private final long capacity;
+    private final long maxInsert, maxExtract;
+    private SimpleItemHeatStorageImpl(@NotNull ContainerItemContext context, long capacity, long maxInsert, long maxExtract) {
+        this.context = context;
+        this.capacity = capacity;
+        this.maxInsert = maxInsert;
+        this.maxExtract = maxExtract;
+    }
+
     public static HeatStorage createSimpleStorage(ContainerItemContext context, long capacity, long maxInsert, long maxExtract) {
         Objects.requireNonNull(context);
         StoragePreconditions.notNegative(capacity);
@@ -28,23 +38,12 @@ public class SimpleItemHeatStorageImpl implements HeatStorage {
                 () -> context.getItemVariant().isOf(startingItem) && context.getAmount() > 0);
     }
 
-    private final ContainerItemContext context;
-    private final long capacity;
-    private final long maxInsert, maxExtract;
-
-    private SimpleItemHeatStorageImpl(@NotNull ContainerItemContext context, long capacity, long maxInsert, long maxExtract) {
-        this.context = context;
-        this.capacity = capacity;
-        this.maxInsert = maxInsert;
-        this.maxExtract = maxExtract;
-    }
-
     private boolean trySetHeat(long heatAmountPerCount, long count, TransactionContext transaction) {
         ItemStack newStack = context.getItemVariant().toStack();
         SimpleHeatItem.setHeatStoredUnchecked(newStack, heatAmountPerCount);
         ItemVariant newVariant = ItemVariant.of(newStack);
 
-        try(Transaction nested = transaction.openNested()) {
+        try (Transaction nested = transaction.openNested()) {
             if (context.extract(context.getItemVariant(), count, nested) == count && context.insert(newVariant, count, nested) == count) {
                 nested.commit();
                 return true;

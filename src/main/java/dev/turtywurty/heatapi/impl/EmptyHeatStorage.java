@@ -8,7 +8,8 @@ import org.jetbrains.annotations.ApiStatus;
 public class EmptyHeatStorage implements HeatStorage {
     public static final EmptyHeatStorage INSTANCE = new EmptyHeatStorage();
 
-    private EmptyHeatStorage() {}
+    private EmptyHeatStorage() {
+    }
 
     @Override
     public boolean supportsInsertion() {

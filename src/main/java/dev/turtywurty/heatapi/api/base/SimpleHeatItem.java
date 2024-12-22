@@ -14,20 +14,6 @@ public interface SimpleHeatItem {
         return SimpleItemHeatStorageImpl.createSimpleStorage(context, capacity, maxInsert, maxExtract);
     }
 
-    long getHeatCapacity(ItemStack stack);
-
-    long getHeatMaxInput(ItemStack stack);
-
-    long getHeatMaxOutput(ItemStack stack);
-
-    default long getHeatStored(ItemStack stack) {
-        return getHeatStoredUnchecked(stack);
-    }
-
-    default void setHeatStored(ItemStack stack, long amount) {
-        setHeatStoredUnchecked(stack, amount);
-    }
-
     static long getHeatStoredUnchecked(ItemStack stack) {
         return stack.getOrDefault(HeatStorage.HEAT_COMPONENT, 0L);
     }
@@ -42,10 +28,24 @@ public interface SimpleHeatItem {
     }
 
     static void setHeatStoredUnchecked(ItemStack stack, long amount) {
-        if(amount <= 0) {
+        if (amount <= 0) {
             stack.remove(HeatStorage.HEAT_COMPONENT);
         } else {
             stack.set(HeatStorage.HEAT_COMPONENT, amount);
         }
+    }
+
+    long getHeatCapacity(ItemStack stack);
+
+    long getHeatMaxInput(ItemStack stack);
+
+    long getHeatMaxOutput(ItemStack stack);
+
+    default long getHeatStored(ItemStack stack) {
+        return getHeatStoredUnchecked(stack);
+    }
+
+    default void setHeatStored(ItemStack stack, long amount) {
+        setHeatStoredUnchecked(stack, amount);
     }
 }

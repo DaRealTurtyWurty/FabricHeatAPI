@@ -14,15 +14,14 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public class HeatImpl {
     public static final String MOD_ID = "heatapi";
-
-    public static Identifier id(String path) {
-        return Identifier.of(MOD_ID, path);
-    }
-
     public static final ComponentType<Long> HEAT_COMPONENT = ComponentType.<Long>builder()
             .codec(nonNegativeLong())
             .packetCodec(PacketCodecs.VAR_LONG)
             .build();
+
+    public static Identifier id(String path) {
+        return Identifier.of(MOD_ID, path);
+    }
 
     public static void init() {
         Registry.register(Registries.DATA_COMPONENT_TYPE, id("heat"), HEAT_COMPONENT);

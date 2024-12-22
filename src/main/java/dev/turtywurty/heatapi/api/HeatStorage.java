@@ -4,6 +4,7 @@ import dev.turtywurty.heatapi.api.base.PredicateHeatStorage;
 import dev.turtywurty.heatapi.api.base.SimpleHeatItem;
 import dev.turtywurty.heatapi.api.base.SimpleHeatStorage;
 import dev.turtywurty.heatapi.api.base.SimpleSidedHeatContainer;
+import dev.turtywurty.heatapi.api.unit.HeatUnit;
 import dev.turtywurty.heatapi.impl.EmptyHeatStorage;
 import dev.turtywurty.heatapi.impl.HeatImpl;
 import dev.turtywurty.heatapi.impl.SimpleItemHeatStorageImpl;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * A heat storage that can be queried for heat transfer.
@@ -83,7 +85,7 @@ public interface HeatStorage {
      * An empty heat storage that does not support any operations.
      * This can be used as a default value for optional heat storages.
      */
-    HeatStorage EMPTY = Objects.requireNonNull(EmptyHeatStorage.INSTANCE);
+    Supplier<HeatStorage> EMPTY = () -> Objects.requireNonNull(EmptyHeatStorage.INSTANCE);
 
     /**
      * A component type for heat storages.
@@ -147,6 +149,13 @@ public interface HeatStorage {
     long getCapacity();
 
     /**
+     * Return the unit of heat that this storage uses.
+     */
+    default HeatUnit getUnit() {
+        return HeatUnit.KELVIN;
+    }
+
+    /**
      * Return the remaining capacity of this storage.
      *
      * <p>This is equivalent to {@link #getCapacity()} - {@link #getAmount()}.
@@ -161,6 +170,13 @@ public interface HeatStorage {
      * <p>This defaults to 0, but can be overridden to provide a minimum amount of heat that must be stored in this storage.
      */
     default long getMinCapacity() {
-        return 0;
+        return (long) getUnit().getMinValue();
+    }
+
+    /**
+     * Return true if the temperature of heat <i>(physicists please ignore)</i> stored in this storage is above room temperature.
+     */
+    default boolean isAboveRoomTemperature() {
+        return getAmount() > HeatUnit.getRoomTemperature(getUnit());
     }
 }
