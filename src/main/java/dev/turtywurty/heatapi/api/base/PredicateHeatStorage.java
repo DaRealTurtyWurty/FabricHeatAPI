@@ -1,7 +1,6 @@
 package dev.turtywurty.heatapi.api.base;
 
 import dev.turtywurty.heatapi.api.HeatStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 import java.util.function.BooleanSupplier;
@@ -40,24 +39,22 @@ public class PredicateHeatStorage implements HeatStorage {
     }
 
     @Override
-    public long insert(long maxAmount, TransactionContext transaction) {
-        StoragePreconditions.notNegative(maxAmount);
+    public double insert(double maxAmount, TransactionContext transaction) {
         return this.validInsertion.getAsBoolean() ? this.delegate.get().insert(maxAmount, transaction) : 0;
     }
 
     @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
-        StoragePreconditions.notNegative(maxAmount);
+    public double extract(double maxAmount, TransactionContext transaction) {
         return this.validExtraction.getAsBoolean() ? this.delegate.get().extract(maxAmount, transaction) : 0;
     }
 
     @Override
-    public long getAmount() {
+    public double getAmount() {
         return this.delegate.get().getAmount();
     }
 
     @Override
-    public long getCapacity() {
+    public double getCapacity() {
         return this.delegate.get().getCapacity();
     }
 }

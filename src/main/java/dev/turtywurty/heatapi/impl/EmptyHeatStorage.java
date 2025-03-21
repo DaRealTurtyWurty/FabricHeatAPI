@@ -22,22 +22,22 @@ public class EmptyHeatStorage implements HeatStorage {
     }
 
     @Override
-    public long insert(long maxAmount, TransactionContext transaction) {
+    public double insert(double maxAmount, TransactionContext transaction) {
         return 0;
     }
 
     @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
+    public double extract(double maxAmount, TransactionContext transaction) {
         return 0;
     }
 
     @Override
-    public long getAmount() {
+    public double getAmount() {
         return 0;
     }
 
     @Override
-    public long getCapacity() {
+    public double getCapacity() {
         return 0;
     }
 }

@@ -1,7 +1,6 @@
 package dev.turtywurty.heatapi.impl;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import dev.turtywurty.heatapi.api.HeatStorage;
 import dev.turtywurty.heatapi.api.base.SimpleHeatItem;
 import net.minecraft.component.ComponentType;
@@ -14,9 +13,9 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public class HeatImpl {
     public static final String MOD_ID = "heatapi";
-    public static final ComponentType<Long> HEAT_COMPONENT = ComponentType.<Long>builder()
-            .codec(nonNegativeLong())
-            .packetCodec(PacketCodecs.VAR_LONG)
+    public static final ComponentType<Double> HEAT_COMPONENT = ComponentType.<Double>builder()
+            .codec(Codec.DOUBLE)
+            .packetCodec(PacketCodecs.DOUBLE)
             .build();
 
     public static Identifier id(String path) {
@@ -32,12 +31,5 @@ public class HeatImpl {
 
             return null;
         });
-    }
-
-    private static Codec<Long> nonNegativeLong() {
-        return Codec.LONG.validate(aLong ->
-                aLong >= 0 ?
-                        DataResult.success(aLong) :
-                        DataResult.error(() -> "Heat value must be non-negative: " + aLong));
     }
 }

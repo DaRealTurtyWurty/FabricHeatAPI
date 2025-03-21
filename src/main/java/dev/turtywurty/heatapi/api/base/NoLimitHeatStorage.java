@@ -2,6 +2,6 @@ package dev.turtywurty.heatapi.api.base;
 
 public class NoLimitHeatStorage extends SimpleHeatStorage {
     public NoLimitHeatStorage(boolean insert, boolean extract) {
-        super(Long.MAX_VALUE, insert ? Long.MAX_VALUE : 0, extract ? Long.MAX_VALUE : 0);
+        super(Double.MAX_VALUE, insert ? Double.MAX_VALUE : 0, extract ? Double.MAX_VALUE : 0);
     }
 }

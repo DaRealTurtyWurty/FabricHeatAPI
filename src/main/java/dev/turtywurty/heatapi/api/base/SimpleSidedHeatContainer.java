@@ -1,7 +1,6 @@
 package dev.turtywurty.heatapi.api.base;
 
 import dev.turtywurty.heatapi.api.HeatStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.util.math.Direction;
@@ -14,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * This class is a {@link SnapshotParticipant} and will automatically handle snapshots for you.
  */
-public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long> {
+public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Double> {
     private final SideStorage[] sideStorages = new SideStorage[Direction.values().length + 1];
-    private long amount;
+    private double amount;
 
     public SimpleSidedHeatContainer() {
         for (int i = 0; i < this.sideStorages.length; i++) {
@@ -27,7 +26,7 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
     /**
      * @return the capacity of this storage
      */
-    public abstract long getCapacity();
+    public abstract double getCapacity();
 
     /**
      * Get the maximum amount of heat that can be inserted into this storage in a single operation.
@@ -36,7 +35,7 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
      *             (e.g. from a machine's internal buffer)
      * @return the maximum amount of heat that can be inserted
      */
-    public abstract long getMaxInsert(@Nullable Direction side);
+    public abstract double getMaxInsert(@Nullable Direction side);
 
     /**
      * Get the maximum amount of heat that can be extracted from this storage in a single operation.
@@ -45,7 +44,7 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
      *             (e.g. to a machine's internal buffer)
      * @return the maximum amount of heat that can be extracted
      */
-    public abstract long getMaxExtract(@Nullable Direction side);
+    public abstract double getMaxExtract(@Nullable Direction side);
 
     /**
      * Get the capacity of the storage on a given side.
@@ -58,20 +57,20 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
     }
 
     @Override
-    protected Long createSnapshot() {
+    protected Double createSnapshot() {
         return this.amount;
     }
 
     @Override
-    protected void readSnapshot(Long snapshot) {
+    protected void readSnapshot(Double snapshot) {
         this.amount = snapshot;
     }
 
-    public long getAmount() {
+    public double getAmount() {
         return this.amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -97,10 +96,8 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
         }
 
         @Override
-        public long insert(long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notNegative(maxAmount);
-
-            long inserted = Math.min(getMaxInsert(side), Math.min(maxAmount, getCapacity() - amount));
+        public double insert(double maxAmount, TransactionContext transaction) {
+            double inserted = Math.min(getMaxInsert(side), Math.min(maxAmount, getCapacity() - amount));
 
             if (inserted > 0) {
                 updateSnapshots(transaction);
@@ -112,10 +109,8 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
         }
 
         @Override
-        public long extract(long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notNegative(maxAmount);
-
-            long extracted = Math.min(getMaxExtract(side), Math.min(maxAmount, amount));
+        public double extract(double maxAmount, TransactionContext transaction) {
+            double extracted = Math.min(getMaxExtract(side), Math.min(maxAmount, amount));
 
             if (extracted > 0) {
                 updateSnapshots(transaction);
@@ -127,12 +122,12 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Long>
         }
 
         @Override
-        public long getAmount() {
+        public double getAmount() {
             return amount;
         }
 
         @Override
-        public long getCapacity() {
+        public double getCapacity() {
             return SimpleSidedHeatContainer.this.getCapacity();
         }
     }

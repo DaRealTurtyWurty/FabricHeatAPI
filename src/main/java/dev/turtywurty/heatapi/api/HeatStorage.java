@@ -94,7 +94,7 @@ public interface HeatStorage {
      * Otherwise, do not query it or assume it exists.
      * Inter-mod heat interactions should happen using {@link #ITEM}.</b>
      */
-    ComponentType<Long> HEAT_COMPONENT = Objects.requireNonNull(HeatImpl.HEAT_COMPONENT);
+    ComponentType<Double> HEAT_COMPONENT = Objects.requireNonNull(HeatImpl.HEAT_COMPONENT);
 
     /**
      * Return false if calling {@link #insert} will absolutely always return 0, or true otherwise or in doubt.
@@ -115,7 +115,7 @@ public interface HeatStorage {
      * @param transaction the transaction context that this operation is part of
      * @return (a non - negative) amount of heat that was actually inserted (or 0 if no heat was inserted)
      */
-    long insert(long maxAmount, TransactionContext transaction);
+    double insert(double maxAmount, TransactionContext transaction);
 
     /**
      * Return false if calling {@link #extract} will absolutely always return 0, or true otherwise or in doubt.
@@ -136,17 +136,17 @@ public interface HeatStorage {
      * @param transaction the transaction context that this operation is part of
      * @return (a non - negative) amount of heat that was actually extracted (or 0 if no heat was extracted)
      */
-    long extract(long maxAmount, TransactionContext transaction);
+    double extract(double maxAmount, TransactionContext transaction);
 
     /**
      * Return the amount of heat currently stored in this storage.
      */
-    long getAmount();
+    double getAmount();
 
     /**
      * Return the maximum amount of heat that can be stored in this storage.
      */
-    long getCapacity();
+    double getCapacity();
 
     /**
      * Return the unit of heat that this storage uses.
@@ -160,7 +160,7 @@ public interface HeatStorage {
      *
      * <p>This is equivalent to {@link #getCapacity()} - {@link #getAmount()}.
      */
-    default long getRemainingCapacity() {
+    default double getRemainingCapacity() {
         return getCapacity() - getAmount();
     }
 
@@ -169,8 +169,8 @@ public interface HeatStorage {
      *
      * <p>This defaults to 0, but can be overridden to provide a minimum amount of heat that must be stored in this storage.
      */
-    default long getMinCapacity() {
-        return (long) getUnit().getMinValue();
+    default double getMinCapacity() {
+        return getUnit().getMinValue();
     }
 
     /**

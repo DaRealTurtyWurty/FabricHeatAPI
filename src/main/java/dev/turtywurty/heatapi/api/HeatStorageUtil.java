@@ -1,7 +1,6 @@
 package dev.turtywurty.heatapi.api;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.item.ItemStack;
@@ -22,19 +21,17 @@ public final class HeatStorageUtil {
      *                    or {@code null} if a transaction should be opened just for this transfer.
      * @return The amount of heat that was successfully moved.
      */
-    public static long move(@Nullable HeatStorage from, @Nullable HeatStorage to, long maxAmount, @Nullable TransactionContext transaction) {
+    public static double move(@Nullable HeatStorage from, @Nullable HeatStorage to, double maxAmount, @Nullable TransactionContext transaction) {
         if (from == null || to == null)
             return 0;
 
-        StoragePreconditions.notNegative(maxAmount);
-
-        long maxExtracted;
+        double maxExtracted;
         try (Transaction extractionTestTransaction = Transaction.openNested(transaction)) {
             maxExtracted = from.extract(maxAmount, extractionTestTransaction);
         }
 
         try (Transaction moveTransaction = Transaction.openNested(transaction)) {
-            long accepted = to.insert(maxExtracted, moveTransaction);
+            double accepted = to.insert(maxExtracted, moveTransaction);
 
             if (from.extract(accepted, moveTransaction) == accepted) {
                 moveTransaction.commit();

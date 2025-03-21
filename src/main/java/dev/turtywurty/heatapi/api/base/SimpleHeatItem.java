@@ -10,24 +10,24 @@ import net.minecraft.item.ItemStack;
 import java.util.Optional;
 
 public interface SimpleHeatItem {
-    static HeatStorage createStorage(ContainerItemContext context, long capacity, long maxInsert, long maxExtract) {
+    static HeatStorage createStorage(ContainerItemContext context, double capacity, double maxInsert, double maxExtract) {
         return SimpleItemHeatStorageImpl.createSimpleStorage(context, capacity, maxInsert, maxExtract);
     }
 
-    static long getHeatStoredUnchecked(ItemStack stack) {
-        return stack.getOrDefault(HeatStorage.HEAT_COMPONENT, 0L);
+    static double getHeatStoredUnchecked(ItemStack stack) {
+        return stack.getOrDefault(HeatStorage.HEAT_COMPONENT, 0D);
     }
 
-    static long getHeatStoredUnchecked(ItemVariant variant) {
+    static double getHeatStoredUnchecked(ItemVariant variant) {
         return getHeatStoredUnchecked(variant.getComponents());
     }
 
-    static long getHeatStoredUnchecked(ComponentChanges changes) {
-        Optional<Optional<Long>> value = Optional.ofNullable(changes.get(HeatStorage.HEAT_COMPONENT));
-        return value.map(aLong -> aLong.orElse(0L)).orElse(0L);
+    static double getHeatStoredUnchecked(ComponentChanges changes) {
+        Optional<Optional<Double>> value = Optional.ofNullable(changes.get(HeatStorage.HEAT_COMPONENT));
+        return value.map(aDouble -> aDouble.orElse(0D)).orElse(0D);
     }
 
-    static void setHeatStoredUnchecked(ItemStack stack, long amount) {
+    static void setHeatStoredUnchecked(ItemStack stack, double amount) {
         if (amount <= 0) {
             stack.remove(HeatStorage.HEAT_COMPONENT);
         } else {
@@ -35,17 +35,17 @@ public interface SimpleHeatItem {
         }
     }
 
-    long getHeatCapacity(ItemStack stack);
+    double getHeatCapacity(ItemStack stack);
 
-    long getHeatMaxInput(ItemStack stack);
+    double getHeatMaxInput(ItemStack stack);
 
-    long getHeatMaxOutput(ItemStack stack);
+    double getHeatMaxOutput(ItemStack stack);
 
-    default long getHeatStored(ItemStack stack) {
+    default double getHeatStored(ItemStack stack) {
         return getHeatStoredUnchecked(stack);
     }
 
-    default void setHeatStored(ItemStack stack, long amount) {
+    default void setHeatStored(ItemStack stack, double amount) {
         setHeatStoredUnchecked(stack, amount);
     }
 }

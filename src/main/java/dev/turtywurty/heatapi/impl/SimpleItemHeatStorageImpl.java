@@ -1,11 +1,11 @@
 package dev.turtywurty.heatapi.impl;
 
+import dev.turtywurty.heatapi.HeatStoragePreconditions;
 import dev.turtywurty.heatapi.api.HeatStorage;
 import dev.turtywurty.heatapi.api.base.PredicateHeatStorage;
 import dev.turtywurty.heatapi.api.base.SimpleHeatItem;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.item.Item;
@@ -18,30 +18,31 @@ import java.util.Objects;
 @ApiStatus.Internal
 public class SimpleItemHeatStorageImpl implements HeatStorage {
     private final ContainerItemContext context;
-    private final long capacity;
-    private final long maxInsert, maxExtract;
-    private SimpleItemHeatStorageImpl(@NotNull ContainerItemContext context, long capacity, long maxInsert, long maxExtract) {
+    private final double capacity;
+    private final double maxInsert, maxExtract;
+
+    private SimpleItemHeatStorageImpl(@NotNull ContainerItemContext context, double capacity, double maxInsert, double maxExtract) {
         this.context = context;
         this.capacity = capacity;
         this.maxInsert = maxInsert;
         this.maxExtract = maxExtract;
     }
 
-    public static HeatStorage createSimpleStorage(ContainerItemContext context, long capacity, long maxInsert, long maxExtract) {
+    public static HeatStorage createSimpleStorage(ContainerItemContext context, double capacity, double maxInsert, double maxExtract) {
         Objects.requireNonNull(context);
-        StoragePreconditions.notNegative(capacity);
-        StoragePreconditions.notNegative(maxInsert);
-        StoragePreconditions.notNegative(maxExtract);
+        HeatStoragePreconditions.notNegative(capacity);
+        HeatStoragePreconditions.notNegative(maxInsert);
+        HeatStoragePreconditions.notNegative(maxExtract);
 
         Item startingItem = context.getItemVariant().getItem();
         return new PredicateHeatStorage(new SimpleItemHeatStorageImpl(context, capacity, maxInsert, maxExtract),
                 () -> context.getItemVariant().isOf(startingItem) && context.getAmount() > 0);
     }
 
-    private boolean trySetHeat(long heatAmountPerCount, long count, TransactionContext transaction) {
+    private boolean trySetHeat(double heatAmountPerCount, long count, TransactionContext transaction) {
         ItemStack newStack = context.getItemVariant().toStack();
         SimpleHeatItem.setHeatStoredUnchecked(newStack, heatAmountPerCount);
-        ItemVariant newVariant = ItemVariant.of(newStack);
+        var newVariant = ItemVariant.of(newStack);
 
         try (Transaction nested = transaction.openNested()) {
             if (context.extract(context.getItemVariant(), count, nested) == count && context.insert(newVariant, count, nested) == count) {
@@ -64,11 +65,11 @@ public class SimpleItemHeatStorageImpl implements HeatStorage {
     }
 
     @Override
-    public long insert(long maxAmount, TransactionContext transaction) {
+    public double insert(double maxAmount, TransactionContext transaction) {
         long count = context.getAmount();
-        long maxAmountPerCount = maxAmount / count;
-        long currentAmountPerCount = getAmount() / count;
-        long insertedPerCount = Math.min(maxInsert, Math.min(maxAmountPerCount, capacity - currentAmountPerCount));
+        double maxAmountPerCount = maxAmount / count;
+        double currentAmountPerCount = getAmount() / count;
+        double insertedPerCount = Math.min(maxInsert, Math.min(maxAmountPerCount, capacity - currentAmountPerCount));
 
         if (insertedPerCount <= 0)
             return 0;
@@ -77,11 +78,11 @@ public class SimpleItemHeatStorageImpl implements HeatStorage {
     }
 
     @Override
-    public long extract(long maxAmount, TransactionContext transaction) {
+    public double extract(double maxAmount, TransactionContext transaction) {
         long count = context.getAmount();
-        long maxAmountPerCount = maxAmount / count;
-        long currentAmountPerCount = getAmount() / count;
-        long extractedPerCount = Math.min(maxExtract, Math.min(maxAmountPerCount, currentAmountPerCount));
+        double maxAmountPerCount = maxAmount / count;
+        double currentAmountPerCount = getAmount() / count;
+        double extractedPerCount = Math.min(maxExtract, Math.min(maxAmountPerCount, currentAmountPerCount));
 
         if (extractedPerCount <= 0)
             return 0;
@@ -90,12 +91,12 @@ public class SimpleItemHeatStorageImpl implements HeatStorage {
     }
 
     @Override
-    public long getAmount() {
+    public double getAmount() {
         return context.getAmount() * SimpleHeatItem.getHeatStoredUnchecked(context.getItemVariant().getComponents());
     }
 
     @Override
-    public long getCapacity() {
+    public double getCapacity() {
         return capacity * context.getAmount();
     }
 }
