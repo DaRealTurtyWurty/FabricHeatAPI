@@ -19,7 +19,7 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Doubl
 
     public SimpleSidedHeatContainer() {
         for (int i = 0; i < this.sideStorages.length; i++) {
-            this.sideStorages[i] = (i == Direction.values().length - 1) ? null : new SideStorage(Direction.byId(i));
+            this.sideStorages[i] = (i == Direction.values().length - 1) ? null : new SideStorage(Direction.byIndex(i));
         }
     }
 
@@ -53,7 +53,7 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Doubl
      * @return the capacity of the storage on the given side
      */
     public HeatStorage getSideStorage(@Nullable Direction side) {
-        return this.sideStorages[side == null ? Direction.values().length - 1 : side.getId()];
+        return this.sideStorages[side == null ? Direction.values().length - 1 : side.getIndex()];
     }
 
     @Override
