@@ -33,6 +33,7 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+	failOnNoDiscoveredTests = false
 }
 
 processResources {
