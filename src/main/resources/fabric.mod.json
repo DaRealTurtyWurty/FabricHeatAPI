@@ -1,28 +1,28 @@
 {
-	"schemaVersion": 1,
-	"id": "heatapi",
-	"version": "${version}",
-	"name": "HeatApi",
-	"description": "A simple API for storing and transferring heat in Minecraft using the Fabric Transfer API.",
-	"authors": [
-		"TurtyWurty"
-	],
-	"contact": {
-		"homepage": "https://turtywurty.dev",
-		"sources": "https://github.com/DaRealTurtyWurty/FabricHeatApi",
-		"issues": "https://github.com/DaRealTurtyWurty/FabricHeatApi/issues"
-	},
-	"license": "MIT",
-	"icon": "assets/heatapi/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"dev.turtywurty.heatapi.impl.HeatImpl::init"
-		]
-	},
-	"depends": {
-		"minecraft": "~1.21-",
-		"java": ">=21",
-		"fabric-transfer-api-v1": ">=5.1.0"
-	}
+  "schemaVersion": 1,
+  "id": "heatapi",
+  "version": "${version}",
+  "name": "HeatApi",
+  "description": "A simple API for storing and transferring heat in Minecraft using the Fabric Transfer API.",
+  "authors": [
+    "TurtyWurty"
+  ],
+  "contact": {
+    "homepage": "https://turtywurty.dev",
+    "sources": "https://github.com/DaRealTurtyWurty/FabricHeatApi",
+    "issues": "https://github.com/DaRealTurtyWurty/FabricHeatApi/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/heatapi/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.turtywurty.heatapi.impl.HeatImpl::init"
+    ]
+  },
+  "depends": {
+    "minecraft": "~26.1-",
+    "java": ">=25",
+    "fabric-transfer-api-v1": "*"
+  }
 }

@@ -4,8 +4,8 @@ import dev.turtywurty.heatapi.api.HeatStorage;
 import dev.turtywurty.heatapi.impl.SimpleItemHeatStorageImpl;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Optional;
 
@@ -19,10 +19,10 @@ public interface SimpleHeatItem {
     }
 
     static double getHeatStoredUnchecked(ItemVariant variant) {
-        return getHeatStoredUnchecked(variant.getComponents());
+        return getHeatStoredUnchecked(variant.getComponentsPatch());
     }
 
-    static double getHeatStoredUnchecked(ComponentChanges changes) {
+    static double getHeatStoredUnchecked(DataComponentPatch changes) {
         Optional<Optional<Double>> value = Optional.ofNullable(changes.get(HeatStorage.HEAT_COMPONENT));
         return value.map(aDouble -> aDouble.orElse(0D)).orElse(0D);
     }

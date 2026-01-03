@@ -12,8 +12,8 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.component.ComponentType;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -94,7 +94,7 @@ public interface HeatStorage {
      * Otherwise, do not query it or assume it exists.
      * Inter-mod heat interactions should happen using {@link #ITEM}.</b>
      */
-    ComponentType<Double> HEAT_COMPONENT = Objects.requireNonNull(HeatImpl.HEAT_COMPONENT);
+    DataComponentType<Double> HEAT_COMPONENT = Objects.requireNonNull(HeatImpl.HEAT_COMPONENT);
 
     /**
      * Return false if calling {@link #insert} will absolutely always return 0, or true otherwise or in doubt.

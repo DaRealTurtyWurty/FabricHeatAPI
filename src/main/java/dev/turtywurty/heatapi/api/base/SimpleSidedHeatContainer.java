@@ -3,7 +3,7 @@ package dev.turtywurty.heatapi.api.base;
 import dev.turtywurty.heatapi.api.HeatStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -19,7 +19,7 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Doubl
 
     public SimpleSidedHeatContainer() {
         for (int i = 0; i < this.sideStorages.length; i++) {
-            this.sideStorages[i] = (i == Direction.values().length - 1) ? null : new SideStorage(Direction.byIndex(i));
+            this.sideStorages[i] = (i == Direction.values().length - 1) ? null : new SideStorage(Direction.from3DDataValue(i));
         }
     }
 
@@ -53,7 +53,7 @@ public abstract class SimpleSidedHeatContainer extends SnapshotParticipant<Doubl
      * @return the capacity of the storage on the given side
      */
     public HeatStorage getSideStorage(@Nullable Direction side) {
-        return this.sideStorages[side == null ? Direction.values().length - 1 : side.getIndex()];
+        return this.sideStorages[side == null ? Direction.values().length - 1 : side.get3DDataValue()];
     }
 
     @Override
